@@ -2,8 +2,8 @@ name: Continuous Integration
 
 env:
   OUTPUT_DIR: publish
-  RELEASE_PREFIX: Azure Function Template
-  AZURE_FUNCTIONAPP_NAME: ''
+  RELEASE_PREFIX: Manage Reported Properties
+  AZURE_FUNCTIONAPP_NAME: 'scooter-monitor-manage-reported-properties'
 
 on:
   workflow_dispatch:
