@@ -4,7 +4,6 @@ using System.Text.Json;
 using Azure;
 using Azure.DigitalTwins.Core;
 using Azure.Identity;
-using EScooter.DigitalTwins.Commons;
 using Microsoft.Azure.Devices.Shared;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
