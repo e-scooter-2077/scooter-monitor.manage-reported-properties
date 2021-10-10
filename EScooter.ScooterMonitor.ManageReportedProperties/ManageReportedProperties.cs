@@ -27,24 +27,42 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
             string scooterId = ((JsonElement)value).GetString();
 
             logger.LogInformation("id: " + scooterId);
+            logger.LogInformation("message: " + mySbMsg);
 
             // update Digital twin reported properties, ignore the others.
             var scooterDeviceTwin = JsonConvert.DeserializeObject<Twin>(mySbMsg, new TwinJsonConverter());
             var reportedProperties = scooterDeviceTwin.Properties.Reported;
+            logger.LogInformation("twin: " + scooterDeviceTwin);
+
             if (reportedProperties.Count > 0)
             {
                 var patch = new JsonPatchDocument();
                 patch.AppendReplace("/Connected", true);
-                patch.AppendReplace("/Locked", reportedProperties["Locked"]);
-                patch.AppendReplace("/MaxSpeed", reportedProperties["MaxSpeed"]);
-                var updateFrequency = 30; // TODO: change to proper property
-                patch.AppendReplace("/UpdateFrequency", updateFrequency);
+
+                AppendReplaceProperty<bool>(patch, "Locked", "/Locked", reportedProperties);
+                AppendReplaceProperty<double>(patch, "MaxSpeed", "/MaxSpeed", reportedProperties);
+                AppendReplaceProperty(patch, "UpdateFrequency", "/UpdateFrequency", reportedProperties, x => (int)TimeSpan.Parse((string)x).TotalSeconds);
+
                 patch.AppendReplace("/Standby", false); // TODO: change to proper property
 
                 await digitalTwinsClient.UpdateDigitalTwinAsync(scooterId, patch);
+                logger.LogInformation($"Updated reported properties of twin: {scooterId}");
             }
+            logger.LogInformation($"No reported property to update!");
+        }
 
-            logger.LogInformation($"Updated reported properties of twin: {scooterId}");
+        private static void AppendReplaceProperty<T>(JsonPatchDocument patch, string propertyName, string patchProperty, TwinCollection reported)
+        {
+            AppendReplaceProperty<T>(patch, propertyName, patchProperty, reported, x => x);
+        }
+
+        private static void AppendReplaceProperty<T>(JsonPatchDocument patch, string propertyName, string patchProperty, TwinCollection reported, Func<dynamic, T> mapper)
+        {
+            if (reported.Contains(propertyName))
+            {
+                var value = mapper(reported[propertyName]);
+                patch.AppendReplace<T>(patchProperty, value);
+            }
         }
     }
 }
