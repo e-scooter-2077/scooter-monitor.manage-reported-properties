@@ -36,7 +36,6 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
             if (reportedProperties.Count > 0)
             {
                 var patch = new JsonPatchDocument();
-                patch.AppendReplace("/Connected", true);
                 AppendReplaceProperty<bool>(patch, "locked", "/Locked", reportedProperties);
                 AppendReplaceProperty<double>(patch, "maxSpeed", "/MaxSpeed", reportedProperties, x => ConvertSpeed((double)x));
                 AppendReplaceProperty(patch, "updateFrequency", "/UpdateFrequency", reportedProperties, x => (int)TimeSpan.Parse((string)x).TotalSeconds);
