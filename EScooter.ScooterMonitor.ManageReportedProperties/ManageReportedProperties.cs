@@ -13,61 +13,44 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
 {
     public static class ManageReportedProperties
     {
+        public record ScooterStatusChanged(
+            string Id,
+            bool Locked,
+            string UpdateFrequency,
+            double MaxSpeed,
+            bool Standby);
+
         [Function("manage-properties")]
-        public static async void ManageProperties([ServiceBusTrigger("%TopicName%", "%SubscriptionName%", Connection = "ServiceBusConnectionString")] string mySbMsg, IDictionary<string, object> userProperties, FunctionContext context)
+        public static async void ManageProperties([ServiceBusTrigger("%TopicName%", "%SubscriptionName%", Connection = "ServiceBusConnectionString")] string mySbMsg, FunctionContext context)
         {
             var logger = context.GetLogger("Function");
-            string digitalTwinUrl = "https://" + Environment.GetEnvironmentVariable("AzureDTHostname");
-            var credential = new DefaultAzureCredential();
-            var digitalTwinsClient = new DigitalTwinsClient(new Uri(digitalTwinUrl), credential);
 
-            // get Id
-            userProperties.TryGetValue("deviceId", out object value);
-            string scooterId = ((JsonElement)value).GetString();
+            var scooterStatusChanged = JsonConvert.DeserializeObject<ScooterStatusChanged>(mySbMsg);
+            string scooterId = scooterStatusChanged.Id;
 
             logger.LogInformation("id: " + scooterId);
             logger.LogInformation("message: " + mySbMsg);
 
-            // update Digital twin reported properties, ignore the others.
-            var scooterDeviceTwin = JsonConvert.DeserializeObject<Twin>(mySbMsg, new TwinJsonConverter());
-            var reportedProperties = scooterDeviceTwin.Properties.Reported;
-            logger.LogInformation("twin: " + scooterDeviceTwin.ToJson());
+            var patch = new JsonPatchDocument();
+            patch.AppendReplace("/Locked", scooterStatusChanged.Locked);
+            patch.AppendReplace("/UpdateFrequency", ConvertTimeSpanStringToSeconds(scooterStatusChanged.UpdateFrequency));
+            patch.AppendReplace("/MaxSpeed", ConvertSpeed(scooterStatusChanged.MaxSpeed));
+            patch.AppendReplace("/Standby", scooterStatusChanged.Standby);
+            logger.LogInformation($"Patch: ${patch}");
 
-            if (reportedProperties.Count > 0)
-            {
-                var patch = new JsonPatchDocument();
-                AppendReplaceProperty<bool>(patch, "locked", "/Locked", reportedProperties);
-                AppendReplaceProperty<double>(patch, "maxSpeed", "/MaxSpeed", reportedProperties, x => ConvertSpeed((double)x));
-                AppendReplaceProperty(patch, "updateFrequency", "/UpdateFrequency", reportedProperties, x => (int)TimeSpan.Parse((string)x).TotalSeconds);
-                AppendReplaceProperty<bool>(patch, "standby", "/Standby", reportedProperties);
-
-                logger.LogInformation($"Patch: ${patch}");
-                await digitalTwinsClient.UpdateDigitalTwinAsync(scooterId, patch);
-                logger.LogInformation($"Updated reported properties of twin: {scooterId}\n");
-            }
-            else
-            {
-                logger.LogInformation($"No reported property to update!\n");
-            }
+            string digitalTwinUrl = "https://" + Environment.GetEnvironmentVariable("AzureDTHostname");
+            var credential = new DefaultAzureCredential();
+            var digitalTwinsClient = new DigitalTwinsClient(new Uri(digitalTwinUrl), credential);
+            await digitalTwinsClient.UpdateDigitalTwinAsync(scooterId, patch);
+            logger.LogInformation($"Updated reported properties of twin: {scooterId}\n");
         }
+
+        private static int ConvertTimeSpanStringToSeconds(string timespan) =>
+            (int)TimeSpan.Parse(timespan).TotalSeconds;
 
         private static double ConvertSpeed(double speedInMS)
         {
             return Math.Round(speedInMS * 3.6, 4);
-        }
-
-        private static void AppendReplaceProperty<T>(JsonPatchDocument patch, string propertyName, string patchProperty, TwinCollection reported)
-        {
-            AppendReplaceProperty<T>(patch, propertyName, patchProperty, reported, x => x);
-        }
-
-        private static void AppendReplaceProperty<T>(JsonPatchDocument patch, string propertyName, string patchProperty, TwinCollection reported, Func<dynamic, T> mapper)
-        {
-            if (reported.Contains(propertyName))
-            {
-                var value = mapper(reported[propertyName]);
-                patch.AppendReplace<T>(patchProperty, value);
-            }
         }
     }
 }
