@@ -14,9 +14,9 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
     public static class ManageReportedProperties
     {
         public record ScooterStatusChanged(
-            string? Id,
+            string Id,
             bool? Locked,
-            string? UpdateFrequency,
+            string UpdateFrequency,
             double? MaxSpeed,
             bool? Standby);
 
