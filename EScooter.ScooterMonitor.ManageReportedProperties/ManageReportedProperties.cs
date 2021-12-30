@@ -14,11 +14,11 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
     public static class ManageReportedProperties
     {
         public record ScooterStatusChanged(
-            string Id,
-            bool Locked,
-            string UpdateFrequency,
-            double MaxSpeed,
-            bool Standby);
+            string? Id,
+            bool? Locked,
+            string? UpdateFrequency,
+            double? MaxSpeed,
+            bool? Standby);
 
         [Function("manage-properties")]
         public static async void ManageProperties([ServiceBusTrigger("%TopicName%", "%SubscriptionName%", Connection = "ServiceBusConnectionString")] string mySbMsg, FunctionContext context)
@@ -32,10 +32,22 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
             logger.LogInformation("message: " + mySbMsg);
 
             var patch = new JsonPatchDocument();
-            patch.AppendReplace("/Locked", scooterStatusChanged.Locked);
-            patch.AppendReplace("/UpdateFrequency", ConvertTimeSpanStringToSeconds(scooterStatusChanged.UpdateFrequency));
-            patch.AppendReplace("/MaxSpeed", ConvertSpeed(scooterStatusChanged.MaxSpeed));
-            patch.AppendReplace("/Standby", scooterStatusChanged.Standby);
+            if (scooterStatusChanged.Locked != null)
+            {
+                patch.AppendReplace("/Locked", scooterStatusChanged.Locked);
+            }
+            if (scooterStatusChanged.UpdateFrequency != null)
+            {
+                patch.AppendReplace("/UpdateFrequency", ConvertTimeSpanStringToSeconds(scooterStatusChanged.UpdateFrequency));
+            }
+            if (scooterStatusChanged.MaxSpeed != null)
+            {
+                patch.AppendReplace("/MaxSpeed", ConvertSpeed(scooterStatusChanged.MaxSpeed.Value));
+            }
+            if (scooterStatusChanged.Standby != null)
+            {
+                patch.AppendReplace("/Standby", scooterStatusChanged.Standby);
+            }
             logger.LogInformation($"Patch: ${patch}");
 
             string digitalTwinUrl = "https://" + Environment.GetEnvironmentVariable("AzureDTHostname");
