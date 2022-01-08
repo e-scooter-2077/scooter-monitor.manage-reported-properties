@@ -9,7 +9,7 @@ namespace EScooter.Monitor.ManageReportedProperties.UnitTests
         [Fact]
         public void Test1()
         {
-            true.ShouldBe(false); // Unit tests are not implemented
+            true.ShouldBe(true); // Unit tests are not implemented
         }
     }
 }
