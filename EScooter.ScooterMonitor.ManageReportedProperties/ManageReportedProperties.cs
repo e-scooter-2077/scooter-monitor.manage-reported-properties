@@ -9,7 +9,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace EScooter.ScooterMonitor.ManageReportedProperties
+namespace EScooter.Monitor.ManageReportedProperties
 {
     public static class ManageReportedProperties
     {
@@ -26,7 +26,7 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
             var logger = context.GetLogger("Function");
 
             var scooterStatusChanged = JsonConvert.DeserializeObject<ScooterStatusChanged>(mySbMsg);
-            string scooterId = scooterStatusChanged.Id;
+            var scooterId = scooterStatusChanged.Id;
 
             logger.LogInformation("id: " + scooterId);
             logger.LogInformation("message: " + mySbMsg);
@@ -38,7 +38,7 @@ namespace EScooter.ScooterMonitor.ManageReportedProperties
             patch.AppendReplace("/Standby", scooterStatusChanged.Standby);
             logger.LogInformation($"Patch: ${patch}");
 
-            string digitalTwinUrl = "https://" + Environment.GetEnvironmentVariable("AzureDTHostname");
+            var digitalTwinUrl = "https://" + Environment.GetEnvironmentVariable("AzureDTHostname");
             var credential = new DefaultAzureCredential();
             var digitalTwinsClient = new DigitalTwinsClient(new Uri(digitalTwinUrl), credential);
             await digitalTwinsClient.UpdateDigitalTwinAsync(scooterId, patch);
