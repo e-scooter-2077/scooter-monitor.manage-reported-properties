@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EScooter.Monitor.ManageReportedProperties", "EScooter.ScooterMonitor.ManageReportedProperties\EScooter.Monitor.ManageReportedProperties.csproj", "{C4391D51-2B2B-4287-A0C3-3E0A8BFB6699}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EScooter.Monitor.ManageReportedProperties.UnitTests", "test\EScooter.Monitor.ManageReportedProperties.UnitTests\EScooter.Monitor.ManageReportedProperties.UnitTests.csproj", "{D050B687-6D84-402E-B0C1-8BA06276864A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EScooter.Monitor.ManageReportedProperties.UnitTests", "test\EScooter.Monitor.ManageReportedProperties.UnitTests\EScooter.Monitor.ManageReportedProperties.UnitTests.csproj", "{D050B687-6D84-402E-B0C1-8BA06276864A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EScooter.Monitor.ManageReportedProperties", "EScooter.Monitor.ManageReportedProperties\EScooter.Monitor.ManageReportedProperties.csproj", "{97F0E16A-779B-4371-A078-26574B8A861D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C4391D51-2B2B-4287-A0C3-3E0A8BFB6699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4391D51-2B2B-4287-A0C3-3E0A8BFB6699}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4391D51-2B2B-4287-A0C3-3E0A8BFB6699}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4391D51-2B2B-4287-A0C3-3E0A8BFB6699}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D050B687-6D84-402E-B0C1-8BA06276864A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D050B687-6D84-402E-B0C1-8BA06276864A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D050B687-6D84-402E-B0C1-8BA06276864A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D050B687-6D84-402E-B0C1-8BA06276864A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97F0E16A-779B-4371-A078-26574B8A861D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97F0E16A-779B-4371-A078-26574B8A861D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97F0E16A-779B-4371-A078-26574B8A861D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97F0E16A-779B-4371-A078-26574B8A861D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
