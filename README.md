@@ -6,5 +6,5 @@
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/e-scooter-2077/scooter-monitor.manage-reported-properties?include_prereleases&style=plastic)](https://github.com/e-scooter-2077/scooter-monitor.manage-reported-properties/releases)
 [![Documentation](https://img.shields.io/badge/documentation-click%20here-informational?style=plastic)](https://e-scooter-2077.github.io/documentation/implementation/index.html#event-handling)
 
-This is an Event Bus triggered Azure Function that reacts to the events of the Scooter Monitor Function signaling the changes in the reported properties of a device and update the corresponding values on the scooter Digital Twin.
+This is a Service Bus triggered Azure Function that reacts to the events of the Scooter Monitor Function signaling the changes in the reported properties of a device and update the corresponding values on the scooter Digital Twin.
 
