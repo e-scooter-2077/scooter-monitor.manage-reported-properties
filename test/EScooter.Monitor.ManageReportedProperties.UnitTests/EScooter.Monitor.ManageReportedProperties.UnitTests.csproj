@@ -20,6 +20,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\EScooter.Monitor.ManageReportedProperties\EScooter.Monitor.ManageReportedProperties.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <RootFolder>../../</RootFolder>
   </PropertyGroup>
